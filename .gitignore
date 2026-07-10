@@ -1,0 +1,27 @@
+# ===== Dataset & backup (JANGAN di-commit, terlalu besar buat GitHub) =====
+dataset/
+dataset_backup_*.zip
+*.zip
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+env/
+.torch/
+
+# ===== Logs sementara =====
+*.log
+
+# ===== OS / editor =====
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# ===== JANGAN abaikan model (dibutuhkan buat inference saat deploy) =====
+!models/
+!models/*.pth
+!fish-classifier-php/weights/

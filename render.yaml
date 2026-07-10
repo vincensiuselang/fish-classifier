@@ -1,0 +1,11 @@
+# Blueprint Render buat versi Python (FastAPI + PyTorch).
+# Cara pakai: di Render -> New -> Blueprint -> pilih repo ini.
+# Render bakal auto-build dari Dockerfile di root.
+services:
+  - type: web
+    name: fish-classifier-py
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /api
+    autoDeploy: true

@@ -1,0 +1,7 @@
+.git/
+*.log
+node_modules/
+tools/export_weights.py
+samples/
+README.md
+.env

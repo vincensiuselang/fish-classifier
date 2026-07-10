@@ -1,0 +1,12 @@
+# Jangan ikutkan file berat / gak perlu ke image Python
+dataset/
+dataset_backup_*.zip
+fish-classifier-php/
+logs/
+notebook/
+**/__pycache__/
+*.pyc
+.git/
+venv/
+.venv/
+*.md

@@ -1,7 +1,9 @@
 # Dependency runtime buat serving API (tanpa torch/torchvision — itu di-install
 # terpisah sebagai CPU-only wheel di Dockerfile biar image kecil).
 # Dipakai HANYA buat deploy web; buat training tetap pakai requirements.txt.
-numpy>=1.24.0
+# WAJIB <2.0 — PyTorch 2.2 gak kompatibel sama NumPy 2.x
+# (gejalanya: "Numpy is not available" pas inference).
+numpy>=1.24.0,<2.0
 pillow>=10.0.0
 fastapi>=0.110.0
 uvicorn[standard]>=0.27.0

@@ -3,66 +3,83 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Klasifikasi Ikan Indonesia</title>
+    <title>Prediksi // FISH-CLF</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🐟 Klasifikasi Ikan Indonesia</h1>
-            <p class="subsubtitle">Upload gambar ikan, AI akan tebak jenisnya</p>
-            <p class="subtitle">Ikan: Bawal Putih, Nila, Pari, Tongkol, Tuna</p>
-        </header>
+    <div class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="/"><span class="mark">FISH</span>-CLF<span class="blink">_</span></a>
+            <nav class="nav">
+                <a href="/" class="active">Prediksi</a>
+                <a href="/docs">API</a>
+            </nav>
+        </div>
+    </div>
 
-        <section class="model-picker">
-            <label for="model-select">Pilih model:</label>
-            <select id="model-select">
-                <option value="transfer">Transfer Learning (MobileNetV2)</option>
-                <option value="cnn_scratch">CNN from Scratch</option>
-            </select>
-        </section>
+    <div class="wrap">
+        <h1 class="page-title">Klasifikasi Ikan</h1>
+        <p class="page-sub">CNN inference PyTorch // upload gambar ikan, model nebak jenisnya + confidence top-3.</p>
 
-        <section class="upload-area" id="upload-area">
-            <input type="file" id="file-input" accept="image/*" hidden />
-            <div class="upload-content" id="upload-content">
-                <div class="upload-icon">📁</div>
-                <p class="upload-text">Drag & drop gambar ikan di sini</p>
-                <p class="upload-hint">atau klik buat browse file (JPG/PNG)</p>
-            </div>
-            <img id="preview" alt="Preview" hidden />
-        </section>
-
-        <button id="predict-btn" class="btn-primary" disabled>
-            Prediksi Sekarang
-        </button>
-
-        <section id="result-section" class="result-section" hidden>
-            <h2>Hasil Prediksi</h2>
-            <div class="result-card">
-                <div class="prediction-main">
-                    <span class="label">Jenis Ikan:</span>
-                    <span id="prediction-name" class="value"></span>
-                </div>
-                <div class="confidence-bar">
-                    <div id="confidence-fill" class="fill"></div>
-                    <span id="confidence-text" class="confidence-text"></span>
-                </div>
-
-                <h3>Top-3 Probabilitas</h3>
-                <div id="top-k-list" class="top-k"></div>
-            </div>
-        </section>
-
-        <div id="loading" class="loading" hidden>
-            <div class="spinner"></div>
-            <p>Lagi mikir...</p>
+        <div class="badges" style="margin-bottom:22px">
+            <span class="badge b1">Bawal Putih</span>
+            <span class="badge b2">Nila</span>
+            <span class="badge b3">Pari</span>
+            <span class="badge b4">Tongkol</span>
+            <span class="badge b5">Tuna</span>
         </div>
 
-        <div id="error" class="error" hidden></div>
+        <div class="panel">
+            <div class="panel-head"><span><span class="dot"></span>INPUT // UPLOAD IMAGE</span><span>max 10MB</span></div>
 
-        <footer>
-            <p>Klasifikasi 5 jenis ikan: Bawal Putih, Nila, Pari, Tongkol, Tuna</p>
-        </footer>
+            <label class="field" style="margin-bottom:16px">
+                <span>Model</span>
+                <select id="model-select">
+                    <option value="transfer">Transfer Learning (EfficientNet-B0)</option>
+                    <option value="cnn_scratch">CNN from Scratch</option>
+                </select>
+            </label>
+
+            <div id="drop" class="drop">
+                <input type="file" id="file-input" accept="image/*" hidden />
+                <div id="dropInner">
+                    <div class="drop-icon">[ + ]</div>
+                    <p><strong>Klik</strong> atau <strong>seret</strong> gambar ikan ke sini</p>
+                    <div class="hint">JPG / PNG / WEBP &middot; maks 10 MB</div>
+                </div>
+                <img id="preview" alt="preview" hidden />
+            </div>
+
+            <div class="btn-row" style="margin-top:16px">
+                <button id="predict-btn" class="btn" disabled>&gt; Prediksi Sekarang</button>
+                <button id="reset-btn" class="btn ghost sm" type="button" hidden>Reset</button>
+            </div>
+
+            <div id="status" class="status" hidden></div>
+        </div>
+
+        <div id="result-section" class="panel result" hidden>
+            <div class="panel-head"><span><span class="dot"></span>OUTPUT // PREDICTION</span><span id="engine-tag">ENGINE: PYTORCH</span></div>
+            <div class="top">
+                <div class="top-label">Prediksi</div>
+                <div class="top-class" id="prediction-name">&mdash;</div>
+                <div class="top-conf" id="confidence-text"></div>
+            </div>
+            <div class="bars" id="top-k-list"></div>
+            <div class="meta" id="meta"></div>
+        </div>
+    </div>
+
+    <div class="statusbar">
+        <div class="statusbar-inner">
+            <span>SYS: <b>ONLINE</b></span>
+            <span>ENGINE: <b>PYTORCH / EFFICIENTNET-B0</b></span>
+            <span>HOST: <b>RENDER</b></span>
+            <span class="push">FISH-CLF v2 // KLASIFIKASI IKAN INDONESIA</span>
+        </div>
     </div>
 
     <script src="/static/script.js"></script>

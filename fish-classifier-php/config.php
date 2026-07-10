@@ -49,6 +49,13 @@ $db['name'] = $env(['MYSQLDATABASE', 'DB_NAME'], $db['name']);
 $db['user'] = $env(['MYSQLUSER', 'DB_USER'], $db['user']);
 $db['pass'] = $env(['MYSQLPASSWORD', 'DB_PASSWORD'], $db['pass']);
 
+// 3) Driver database. Default 'mysql' (XAMPP lokal). Set FISH_DB=sqlite saat
+//    deploy gratis di Render biar gak butuh server MySQL terpisah — cukup 1 file.
+$db['driver'] = strtolower($env(['FISH_DB', 'DB_DRIVER'], 'mysql'));
+//    Lokasi file SQLite (di /tmp -> selalu bisa ditulis Apache). Data ke-reset
+//    kalau container restart, tapi akun admin/demo + katalog auto-seed lagi.
+$db['sqlite_path'] = $env(['SQLITE_PATH'], sys_get_temp_dir() . '/fish_classifier.sqlite');
+
 return [
     'class_names' => ['Bawal Putih', 'Nila', 'Pari', 'Tongkol', 'Tuna'],
     'num_classes' => 5,

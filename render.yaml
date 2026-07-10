@@ -1,6 +1,8 @@
-# Blueprint Render buat versi Python (FastAPI + PyTorch).
-# Cara pakai: di Render -> New -> Blueprint -> pilih repo ini.
-# Render bakal auto-build dari Dockerfile di root.
+# Blueprint Render — 2 service:
+#   1. fish-classifier-py  = versi Python (FastAPI + PyTorch), inference engine.
+#   2. fish-classifier-php = versi PHP (login/CRUD/katalog), pakai SQLite,
+#      inference-nya nembak ke service Python di atas.
+# Cara pakai: Render -> New -> Blueprint -> pilih repo ini -> Apply.
 services:
   - type: web
     name: fish-classifier-py
@@ -9,3 +11,23 @@ services:
     plan: free
     healthCheckPath: /api
     autoDeploy: true
+
+  - type: web
+    name: fish-classifier-php
+    runtime: docker
+    dockerfilePath: ./fish-classifier-php/Dockerfile
+    dockerContext: ./fish-classifier-php
+    plan: free
+    autoDeploy: true
+    envVars:
+      # Pakai SQLite (gak butuh server MySQL). Data reset kalau restart,
+      # tapi akun admin/demo + katalog auto-seed lagi tiap boot.
+      - key: FISH_DB
+        value: sqlite
+      # Inference lewat API Python (ringan buat PHP). Ganti kalau URL beda.
+      - key: FISH_INFER
+        value: python
+      - key: FISH_PY_API
+        value: https://fish-classifier-py.onrender.com
+      - key: FISH_PY_MODEL
+        value: transfer

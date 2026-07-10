@@ -18,6 +18,42 @@ $opt = [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 ];
 
+// ============================================================
+// JALUR SQLITE (deploy gratis di Render). File auto-dibuat.
+// ============================================================
+if (($db['driver'] ?? 'mysql') === 'sqlite') {
+    $path = $db['sqlite_path'];
+    @mkdir(dirname($path), 0777, true);
+    try {
+        $pdo = new PDO('sqlite:' . $path, null, null, $opt);
+        $pdo->exec('PRAGMA foreign_keys = ON');
+    } catch (PDOException $e) {
+        fwrite(STDERR, "[migrate] gagal buka SQLite ($path): " . $e->getMessage() . "\n");
+        exit(1);
+    }
+    // Sudah ter-migrasi?
+    $exists = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")->fetch();
+    if ($exists) { echo "[migrate] SQLite sudah ter-migrasi, dilewati.\n"; exit(0); }
+
+    $sqliteSchema = __DIR__ . '/../database/schema.sqlite.sql';
+    if (!is_file($sqliteSchema)) {
+        fwrite(STDERR, "[migrate] skema SQLite tidak ditemukan: $sqliteSchema\n");
+        exit(1);
+    }
+    try {
+        // Driver SQLite bisa eksekusi banyak statement (termasuk TRIGGER) sekaligus.
+        $pdo->exec(file_get_contents($sqliteSchema));
+        echo "[migrate] SQLite: skema + data awal berhasil dibuat.\n";
+        exit(0);
+    } catch (PDOException $e) {
+        fwrite(STDERR, "[migrate] gagal import skema SQLite: " . $e->getMessage() . "\n");
+        exit(1);
+    }
+}
+
+// ============================================================
+// JALUR MYSQL (XAMPP lokal / server MySQL)
+// ============================================================
 // 1) Konek ke server (tanpa dbname) buat pastiin database ada (lokal/XAMPP).
 try {
     $root = new PDO(

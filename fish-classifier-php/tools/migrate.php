@@ -24,6 +24,7 @@ $opt = [
 if (($db['driver'] ?? 'mysql') === 'sqlite') {
     $path = $db['sqlite_path'];
     @mkdir(dirname($path), 0777, true);
+    @chmod(dirname($path), 0777);   // Apache (www-data) butuh nulis journal/WAL di dir ini
     try {
         $pdo = new PDO('sqlite:' . $path, null, null, $opt);
         $pdo->exec('PRAGMA foreign_keys = ON');
@@ -31,9 +32,11 @@ if (($db['driver'] ?? 'mysql') === 'sqlite') {
         fwrite(STDERR, "[migrate] gagal buka SQLite ($path): " . $e->getMessage() . "\n");
         exit(1);
     }
+    // File dibuat root (entrypoint) -> bikin bisa dibaca+tulis Apache.
+    @chmod($path, 0666);
     // Sudah ter-migrasi?
     $exists = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")->fetch();
-    if ($exists) { echo "[migrate] SQLite sudah ter-migrasi, dilewati.\n"; exit(0); }
+    if ($exists) { echo "[migrate] SQLite sudah ter-migrasi, dilewati.\n"; @chmod($path, 0666); exit(0); }
 
     $sqliteSchema = __DIR__ . '/../database/schema.sqlite.sql';
     if (!is_file($sqliteSchema)) {

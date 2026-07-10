@@ -13,9 +13,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Setting PHP (inference agak berat)
 RUN { \
       echo 'max_execution_time=120'; \
-      echo 'memory_limit=512M'; \
+      echo 'memory_limit=256M'; \
       echo 'upload_max_filesize=12M'; \
       echo 'post_max_size=14M'; \
+      echo 'display_errors=On'; \
+      echo 'display_startup_errors=On'; \
+      echo 'log_errors=On'; \
+      echo 'error_log=/dev/stderr'; \
     } > /usr/local/etc/php/conf.d/fishclf.ini
 
 # Docroot Apache -> folder public/ + izinkan .htaccess
